@@ -159,7 +159,7 @@ app.get('/', (req, res) => {
 // Define a route for POST requests to /submit
 app.post('/webhook', async (req, res) => {
 	const data = req.body
-	console.log(data)
+	console.log("Webhook body:", data)
 	if (data.payment_status && data.payment_status === 'success') {
 		try {
 			const orderId = data.order_num
