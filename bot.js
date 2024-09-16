@@ -188,7 +188,7 @@ app.post('/webhook', async (req, res) => {
 				🆔UserID: <code>${user.tgId}</code>`
 				await sendMessageToAllAdmins(bot, messageToAdmins)
 				
-				await bot.api.sendMessage(userId, 'Вы успешно оплатили тариф')
+				await bot.api.sendMessage(userId, `Вы успешно оплатили тариф. Номер заказа: ${orderId}.`)
 				await bot.api.sendMessage(
 					userId,
 					`Ссылка на ресурс - ${invite.invite_link}`
