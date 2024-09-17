@@ -16,6 +16,7 @@ composer.callbackQuery(/showPublicOffer/, async ctx => {
 		tarifId: tarif.id,
 		tgId: ctx.from.id,
 	})
+	console.log("New payment:", payment)
 	const currencyForLink = tarif.currency.split(' ')[1].toLowerCase()
 
 	let link
