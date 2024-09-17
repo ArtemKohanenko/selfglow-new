@@ -30,32 +30,19 @@ function minutesToMonthsAndDays(totalMinutes) {
 }
 
 composer.callbackQuery(/selectTarif/, async ctx => {
-
 	const tarifId = ctx.callbackQuery.data.split(' ')[1]
 	ctx.session.payingTarifId = tarifId
 	const tarif = await Tarif.findByPk(tarifId)
 	const currency = tarif.currency.split(' ')[1]
 
 	const resource = await Resource.findByPk(tarif.resourceId)
-	const payment = await Payment.create({
-		tarifId: tarif.id,
-		tgId: ctx.from.id,
-	})
-	const currencyForLink = tarif.currency.split(' ')[1].toLowerCase()
 
 	// const message_to_admin = `Пользователь: <a href="https://t.me/${ctx.from.username}">${fullname}</a>
 	// 		🆔UserID: <code>${ctx.from.id}</code>
 	// 		нажал кнопку купить тариф ${tarif.name}`
 	// await sendMessageToAllAdmins(ctx, message_to_admin)
-
-	let link
-	if (tarif.payment === 2) {
-		link = `https://sonyakononova.payform.ru/?order_id=${payment.id}&products[0][price]=${tarif.price}&products[0][quantity]=1&products[0][name]=${tarif.name}&do=pay&paid_content=Оплата тарифа&urlNotification=${process.env.WEBHOOK_URL}&currency=${currencyForLink}`
-	} else if (tarif.payment === 1) {
-		link = `https://sk-academy.payform.ru/?order_id=${payment.id}&products[0][price]=${tarif.price}&products[0][quantity]=1&products[0][name]=${tarif.name}&do=pay&paid_content=Оплата тарифа&urlNotification=${process.env.WEBHOOK_URL}&currency=${currencyForLink}`
-	}
-
-	const inline = new InlineKeyboard().url('Оплатить', link)
+	const tarifData = ctx.callbackQuery.data.split(' ').slice(1).join(' ')
+	const inline = new InlineKeyboard().text('Оплатить', `showPublicOffer ${tarifData}`)
 	await ctx.reply(
 		`<b>Название тарифа:</b> ${tarif.name}
 <b>Цена:</b> ${tarif.price} ${currency}

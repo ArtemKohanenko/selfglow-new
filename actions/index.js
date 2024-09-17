@@ -14,6 +14,7 @@ import resources from './resources.js'
 import settingsStats from './settingsStats.js'
 import listings from './listings.js'
 import settingsPromo from './settingsPromo.js'
+import showPublicOffer from './showPublicOffer.js'
 
 const composer = new Composer()
 
@@ -32,7 +33,8 @@ composer.use(
 	resources,
 	settingsStats,
 	listings,
-	settingsPromo
+	settingsPromo,
+	showPublicOffer
 )
 
 export default composer
