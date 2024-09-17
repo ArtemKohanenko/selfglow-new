@@ -198,6 +198,7 @@ app.post('/webhook', async (req, res) => {
 					tarifId: tarifId,
 					remaining: days,
 				})
+				console.log("Message sended to new subscriber")
 				return res.sendStatus(200)
 			}
 		} catch (e) {
