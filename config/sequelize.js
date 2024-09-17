@@ -8,4 +8,5 @@ export const sequelize = new Sequelize({
 	password: process.env.MYSQL_PASS,
 	database: process.env.MYSQL_DB,
 	timezone: '+03:00',
+	logging: false
 })
