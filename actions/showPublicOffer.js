@@ -24,7 +24,7 @@ composer.callbackQuery(/showPublicOffer/, async ctx => {
 	} else if (tarif.payment === 1) {
 		link = `https://sk-academy.payform.ru/?order_id=${payment.id}&products[0][price]=${tarif.price}&products[0][quantity]=1&products[0][name]=${tarif.name}&do=pay&paid_content=Оплата тарифа&urlNotification=${process.env.WEBHOOK_URL}&currency=${currencyForLink}`
 	}
-
+	console.log('Link:', link)
 	const inline = new InlineKeyboard().url('Согласен', link)
 	await ctx.reply(`Оплачивая выбранный товар вы соглашаетесь с условиями Публичной оферты.
 https://disk.yandex.ru/i/zcJEkdDq7xqlNQ
