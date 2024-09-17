@@ -7,6 +7,8 @@ import 'dotenv/config'
 
 const composer = new Composer()
 
+const productIds = [12, 13, 14]
+const serviceIds = [11, 15, 16]
 
 composer.callbackQuery(/showPublicOffer/, async ctx => {
 	const user = await User.findOne({ where: { tgId: ctx.from.id } })
@@ -27,12 +29,24 @@ composer.callbackQuery(/showPublicOffer/, async ctx => {
 	}
 	console.log('Link:', link)
 	const inline = new InlineKeyboard().url('Согласен', link)
-	await ctx.reply(`Оплачивая выбранный товар вы соглашаетесь с условиями Публичной оферты.
-https://disk.yandex.ru/i/zcJEkdDq7xqlNQ
+
+	let offerMessage
+	if (productIds.includes(tarif.id)) {
+		offerMessage = `Оплачивая выбранный товар вы соглашаетесь с условиями Публичной оферты.
 https://disk.yandex.ru/i/aanHngFoI7goDg
 		
 Предоставляя персональные данные вы даете согласие на их обработку в соответствии с политикой обработки персональных данных.
-https://disk.yandex.ru/i/PYyrpIQmKf8WGg`, {
+https://disk.yandex.ru/i/PYyrpIQmKf8WGg`
+	}
+	else if (serviceIds.includes(tarif.id)) {
+		offerMessage = `Оплачивая выбранную услугу вы соглашаетесь с условиями Публичной оферты.
+https://disk.yandex.ru/i/zcJEkdDq7xqlNQ
+		
+Предоставляя персональные данные вы даете согласие на их обработку в соответствии с политикой обработки персональных данных.
+https://disk.yandex.ru/i/PYyrpIQmKf8WGg`
+	}
+
+	await ctx.reply(offerMessage, {
 			reply_markup: inline,
 			disable_web_page_preview: true
 		})
