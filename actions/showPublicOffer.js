@@ -38,7 +38,7 @@ https://disk.yandex.ru/i/aanHngFoI7goDg
 Предоставляя персональные данные вы даете согласие на их обработку в соответствии с политикой обработки персональных данных.
 https://disk.yandex.ru/i/PYyrpIQmKf8WGg`
 	}
-	else if (serviceIds.includes(tarif.id)) {
+	else {
 		offerMessage = `Оплачивая выбранную услугу вы соглашаетесь с условиями Публичной оферты.
 https://disk.yandex.ru/i/zcJEkdDq7xqlNQ
 		
