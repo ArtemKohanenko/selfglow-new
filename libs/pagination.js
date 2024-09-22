@@ -224,7 +224,7 @@ export class Pagination {
 					switch (data) {
 						case 'prev':
 							if (this.currentPage <= 1) {
-								return await ctx.answerCbQuery(this.messages.firstPage)
+								return await ctx.answerCallbackQuery(this.messages.firstPage)
 							}
 							this.currentPage = this.currentPage - 1
 							text = await this.text()
@@ -236,7 +236,7 @@ export class Pagination {
 							break
 						case 'next':
 							if (this.currentPage >= this.totalPages) {
-								return await ctx.answerCbQuery(this.messages.lastPage)
+								return await ctx.answerCallbackQuery(this.messages.lastPage)
 							}
 							this.currentPage = this.currentPage + 1
 							text = await this.text()
@@ -252,7 +252,7 @@ export class Pagination {
 						default:
 							this.onSelect(this.currentItems[data], parseInt(data) + 1, ctx)
 					}
-					return await ctx.answerCbQuery()
+					return await ctx.answerCallbackQuery()
 				}
 			)
 		} catch (e) {

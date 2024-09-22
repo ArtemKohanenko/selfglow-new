@@ -15,6 +15,7 @@ import settingsStats from './settingsStats.js'
 import listings from './listings.js'
 import settingsPromo from './settingsPromo.js'
 import showPublicOffer from './showPublicOffer.js'
+import settinsSubs from './settingsSubs.js'
 
 const composer = new Composer()
 
@@ -34,7 +35,8 @@ composer.use(
 	settingsStats,
 	listings,
 	settingsPromo,
-	showPublicOffer
+	showPublicOffer,
+	settinsSubs
 )
 
 export default composer

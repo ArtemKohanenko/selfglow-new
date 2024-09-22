@@ -82,6 +82,8 @@ async function decrementRemaining(ctx) {
 			) {
 				console.log(`${subscriber.id} ${subscriber.remaining}`)
 				if (subscriber.remaining === 1) {
+					subscriber.remaining = 0
+					await subscriber.save()
 					await bot.api.kickChatMember(resource.resourceId, user.tgId)
 					console.log('KICKED')
 				} else if (subscriber.remaining > 0) {

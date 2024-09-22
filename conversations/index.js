@@ -14,6 +14,7 @@ import { addChatConversation } from './addChatConversation.js'
 import { sendListingConversation } from './sendListingConversation.js'
 import { createPromoConversation } from './createPromoConversation.js'
 import promoEdit from './promoEdit/index.js'
+import subscriptionsEdit from './subscriptionsEdit/index.js'
 
 const composer = new Composer()
 
@@ -30,6 +31,7 @@ composer.use(createConversation(addChatConversation))
 composer.use(createConversation(sendListingConversation))
 composer.use(createConversation(createPromoConversation))
 
-composer.use(tarifEdit, promoEdit)
+
+composer.use(tarifEdit, promoEdit, subscriptionsEdit)
 
 export default composer
