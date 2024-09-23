@@ -16,6 +16,8 @@ import listings from './listings.js'
 import settingsPromo from './settingsPromo.js'
 import showPublicOffer from './showPublicOffer.js'
 import settinsSubs from './settingsSubs.js'
+import settingsButtons from './settingsButtons.js'
+import customMenuPages from './customMenuPages.js'
 
 const composer = new Composer()
 
@@ -36,7 +38,9 @@ composer.use(
 	listings,
 	settingsPromo,
 	showPublicOffer,
-	settinsSubs
+	settinsSubs,
+	customMenuPages,
+	settingsButtons
 )
 
 export default composer

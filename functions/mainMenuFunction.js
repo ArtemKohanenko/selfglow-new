@@ -5,6 +5,8 @@ import {
 	startKeyboard,
 } from '../keyboards/startKeyboard.js'
 import 'dotenv/config'
+import addMenuCustomPagesToKeyboard from './addMenuCustomPagesToKeyboard.js'
+
 
 export default async ctx => {
 	const user = await User.findOne({ where: { tgId: ctx.from.id } })
@@ -27,6 +29,7 @@ export default async ctx => {
 		const message_to_admin = `🆕Новый пользователь: <a href="https://t.me/${ctx.from.username}">${fullname}</a>
 			🆔UserID: <code>${ctx.from.id}</code>`
 		await sendMessageToAllAdmins(ctx, message_to_admin)
+		const startKeyboardWithCustomPages = await addMenuCustomPagesToKeyboard(startKeyboard)
 		await ctx.reply(
 			`Привет, красотка! 💕
 Рада приветствовать тебя в своем боте, который поможет тебе разобраться во всех интересующих вопросах:
@@ -55,10 +58,12 @@ export default async ctx => {
 
 Оплачивая подписку вы соглашаетесь с договором оферты и даете согласие на обработку персональных данных.`,
 			{
-				reply_markup: startKeyboard,
+				reply_markup: startKeyboardWithCustomPages,
 			}
 		)
 	} else {
+		const startKeyboardWithCustomPages = await addMenuCustomPagesToKeyboard(startKeyboard)
+		const adminStartKeyboardWithCustomPages = await addMenuCustomPagesToKeyboard(adminStartKeyboard)
 		await ctx.reply(
 			`Привет, красотка! 💕
 Рада приветствовать тебя в своем боте, который поможет тебе разобраться во всех интересующих вопросах:
@@ -87,7 +92,7 @@ export default async ctx => {
 
 Оплачивая подписку вы соглашаетесь с договором оферты и даете согласие на обработку персональных данных.`,
 			{
-				reply_markup: user.isAdmin ? adminStartKeyboard : startKeyboard,
+				reply_markup: user.isAdmin ? adminStartKeyboardWithCustomPages : startKeyboardWithCustomPages,
 			}
 		)
 	}

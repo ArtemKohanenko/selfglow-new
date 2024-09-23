@@ -20,6 +20,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import { sendMessageToAllAdmins } from './functions/sendMessageToAllAdmins.js'
 
+
 const bot = new Bot(process.env.TOKEN)
 
 bot.use(hydrateReply)
@@ -215,3 +216,5 @@ app.listen(PORT, () => {
 })
 
 run(bot)
+
+export { bot }
