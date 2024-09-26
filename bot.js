@@ -20,6 +20,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import { sendMessageToAllAdmins } from './functions/sendMessageToAllAdmins.js'
 
+// await Payment.sync({ alter: true })
 
 const bot = new Bot(process.env.TOKEN)
 
@@ -63,6 +64,8 @@ bot.use(banMiddleware, Conversation, Commands, Texts, Actions)
 import moment from 'moment-timezone'
 import { Resource } from './models/Resource.js'
 import { Payment } from './models/Payment.js'
+import { PromoGroup } from './models/PromoGroup.js'
+import { Promocode } from './models/Promocode.js'
 
 async function decrementRemaining(ctx) {
 	try {
@@ -170,6 +173,15 @@ app.post('/webhook', async (req, res) => {
 			await Payment.update({ status: 'PAID' }, { where: { id: orderId } })
 			const userId = payment.tgId
 			const user = await User.findOne({ where: { tgId: userId } })
+
+			if (payment.promocodeId) {
+				const promo = await Promocode.findByPk(payment.promocodeId)
+				const promoActivatedUsers = JSON.parse(promo.activatedUsers)
+				promoActivatedUsers.append(userId)
+				await Promocode.update({ activatedUsers: promoActivatedUsers }, { where: { id: payment.promocodeId } })
+				console.log(`Added new promocode ${promo.name} usage`)
+			}
+
 			const tarifId = payment.tarifId
 			const tarif = await Tarif.findByPk(tarifId)
 			const currencyForLink = tarif.currency.split(' ')[1].toLowerCase()

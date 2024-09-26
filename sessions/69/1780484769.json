@@ -1,4 +1,5 @@
 {
 	"payingTarifId": "20",
-	"inlineTarifMessage": 365
+	"inlineTarifMessage": 365,
+	"selectedPromoId": null
 }

@@ -3,10 +3,12 @@ import { User } from './User.js'
 import { Subscriber } from './Subscriber.js'
 import { Resource } from './Resource.js'
 import { Payment } from './Payment.js'
+import { Promocode } from './Promocode.js'
 
 // Tarif.hasOne(Subscriber, { foreignKey: 'tarifId', as: 'subscriber' })
 // Tarif.hasOne(Payment, { foreignKey: 'tarifId', as: 'payment' })
 Payment.belongsTo(Tarif, { foreignKey: 'tarifId', as: 'tarif' })
+Payment.belongsTo(Promocode, { foreignKey: 'promocodeId', as: 'promocode' })
 User.hasMany(Subscriber, { foreignKey: 'userId', as: 'subscriber' })
 Subscriber.belongsTo(Tarif, { foreignKey: 'tarifId', as: 'tarif' })
 Subscriber.belongsTo(User, { foreignKey: 'userId', as: 'user' })

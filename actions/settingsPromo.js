@@ -3,22 +3,39 @@ import { Promocode } from '../models/Promocode.js'
 import { User } from '../models/User.js'
 import { Pagination } from './../libs/pagination.js'
 import { sendAdminMenu } from '../functions/sendAdminMenu.js'
+import { PromoGroup } from '../models/PromoGroup.js'
 
 const composer = new Composer()
 
 export async function sendPromoMenu(ctx) {
 	try {
-		const inline = new InlineKeyboard()
-			.text('Общие промокоды', 'promo')
-			.row()
-			.text('Промокоды из рассылок', 'promoListings')
-			.row()
-			.text('🔙 Назад', 'backPromo')
+		const promoGroups = await PromoGroup.findAll()
+		const keyboard = promoGroups.map(group => [{
+			text: group.name,
+			callback_data: `selectPromoGroup ${group.id}`
+		}])
+		keyboard.push([{
+			text: '➕ Создать группу промо',
+			callback_data: 'createPromoGroup'
+		}])
+		keyboard.push([{
+			text: '➕ Создать промо',
+			callback_data: 'createPromo'
+		}])
+		keyboard.push([{
+			text: '🔙 Назад',
+			callback_data: 'banBack'
+		}])
+
 		await ctx.reply(
 			`<b>Настройки промокодов</b>
 
 Выберите нужный раздел промокодов ниже или создайте новый`,
-			{ reply_markup: inline }
+			{
+				reply_markup: {
+					inline_keyboard: keyboard
+				}
+			}
 		)
 	} catch (e) {
 		console.log(e)
@@ -27,6 +44,57 @@ export async function sendPromoMenu(ctx) {
 
 composer.callbackQuery('settingsPromo', async ctx => {
 	await sendPromoMenu(ctx)
+})
+
+composer.callbackQuery(/selectPromoGroup/, async ctx => {
+	const promoGRoupId = Number(ctx.callbackQuery.data.split(' ')[1])
+	const promoGroup = await PromoGroup.findByPk(promoGRoupId)
+
+	const promos = await Promocode.findAll({where: {promoGroupId: promoGRoupId}})
+	const keyboard = promos.map(promo => [{
+		text: `${promo.name} (${promo.percent}%)`,
+		callback_data: `selectPromo ${promo.id}`
+	}])
+	keyboard.push([{
+		text: 'Удалить группу промокодов',
+		callback_data: `deletePromoGroup ${promoGroup.id}`
+	}])
+	keyboard.push([{
+		text: '🔙 Назад',
+		callback_data: 'settingsPromo'
+	}])
+
+	await ctx.reply(`Группа "${promoGroup.name}"`, {
+		reply_markup: {
+			inline_keyboard: keyboard
+		}
+	})
+})
+
+composer.callbackQuery(/deletePromoGroup/, async ctx => {
+	const inline = new InlineKeyboard()
+	.text('🔙 Назад', 'settingsPromo')
+	.row()
+
+	const promoGroupId = Number(ctx.callbackQuery.data.split(' ')[1])
+	const promoGroup = await PromoGroup.findByPk(promoGroupId)
+	const deletedGroupCount = await PromoGroup.destroy({where: {id: promoGroupId}})
+	const deletedPromoCount = await Promocode.destroy({ where: { promoGroupId: promoGroupId }})
+
+	if (deletedGroupCount > 0) {
+		await ctx.reply(`Группа "${promoGroup.name}" из ${deletedPromoCount} промокодов удалена.`, {
+			reply_markup: inline
+		})
+	}
+	else {
+		await ctx.reply(`Удалить группу "${promoGroup.name}" не удалось.`, {
+			reply_markup: inline
+		})
+	}
+})
+
+composer.callbackQuery('createPromoGroup', async ctx => {
+	await ctx.conversation.enter('createPromoGroupConversation')
 })
 
 composer.callbackQuery('promo', async ctx => {
@@ -97,6 +165,15 @@ composer.callbackQuery(/selectPromo/, async ctx => {
 			reply_markup: inline,
 		}
 	)
+})
+
+composer.callbackQuery(/enterPromo/, async ctx => {
+	console.log(228)
+	console.log(ctx.callbackQuery.data)
+	const tarifId = Number(ctx.callbackQuery.data.split(' ')[1])
+	console.log(tarifId)
+	ctx.selectedTarifId = tarifId
+	await ctx.conversation.enter('enterPromoConversation')
 })
 
 composer.callbackQuery('editPromoActivationCount', async ctx => {

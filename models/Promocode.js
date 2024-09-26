@@ -37,6 +37,14 @@ Promocode.init(
 		type: {
 			type: DataTypes.INTEGER,
 			defaultValue: 0,
+		},
+		promoGroupId: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+			references: {
+				model: 'promo_groups',
+				key: 'id'
+			},
 		}
 	},
 	{

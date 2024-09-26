@@ -138,10 +138,5 @@ composer.callbackQuery('renewSubscription', async ctx => {
 	await ctx.conversation.enter('renewSubscriptionConversation');
 })
 
-composer.callbackQuery('userProfile', async ctx => {
-	await ctx.conversation.enter('userProfileConversation');
-})
-
-
 
 export default composer

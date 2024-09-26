@@ -10,6 +10,7 @@ import qs from 'qs'
 import { Buffer } from 'buffer'
 import axios from 'axios'
 import { sendMessageToAllAdmins } from '../functions/sendMessageToAllAdmins.js'
+import { Promocode } from '../models/Promocode.js'
 
 const composer = new Composer()
 
@@ -30,7 +31,13 @@ function minutesToMonthsAndDays(totalMinutes) {
 }
 
 composer.callbackQuery(/selectTarif/, async ctx => {
-	const tarifId = ctx.callbackQuery.data.split(' ')[1]
+	const callbackData = ctx.callbackQuery.data.split(' ')
+	const tarifId = callbackData[1]
+	let promoId;
+	if (callbackData.length == 3) {
+		promoId = Number(callbackData[2])
+	}
+	const promo = await Promocode.findByPk(promoId)
 	ctx.session.payingTarifId = tarifId
 	const tarif = await Tarif.findByPk(tarifId)
 	const currency = tarif.currency.split(' ')[1]
@@ -41,11 +48,20 @@ composer.callbackQuery(/selectTarif/, async ctx => {
 	// 		🆔UserID: <code>${ctx.from.id}</code>
 	// 		нажал кнопку купить тариф ${tarif.name}`
 	// await sendMessageToAllAdmins(ctx, message_to_admin)
-	const tarifData = ctx.callbackQuery.data.split(' ').slice(1).join(' ')
-	const inline = new InlineKeyboard().text('Оплатить', `showPublicOffer ${tarifData}`)
-	await ctx.reply(
+
+	let price
+	if (promo) {
+		price = tarif.price * (1 - promo.percent/100)
+	}
+	else { price = tarif.price}
+
+	const inline = new InlineKeyboard()
+	.text('Оплатить', `showPublicOffer ${tarifId}`).row()
+	.text('Применить промокод', `enterPromo ${tarifId}`)
+
+	return await ctx.reply(
 		`<b>Название тарифа:</b> ${tarif.name}
-<b>Цена:</b> ${tarif.price} ${currency}
+<b>Цена:</b> ${price} ${currency}
 <b>Продолжительность:</b> ${minutesToMonthsAndDays(tarif.time)}
 
 <b>Ресурсы:</b> ${resource.resourceName}

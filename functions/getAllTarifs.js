@@ -1,3 +1,4 @@
+import { Promocode } from '../models/Promocode.js'
 import { Tarif } from '../models/Tarif.js'
 import { Config } from './../models/Config.js'
 

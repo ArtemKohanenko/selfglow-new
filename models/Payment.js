@@ -24,6 +24,18 @@ Payment.init(
 			type: DataTypes.TEXT(),
 			defaultValue: 'CREATED',
 		},
+		promocodeId: {
+			type: DataTypes.INTEGER,
+			allowNull: true
+		},
+		promoGroupId: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+			references: {
+				model: 'promo_groups',
+				key: 'id'
+			},
+		}
 	},
 	{
 		sequelize,

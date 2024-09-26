@@ -1,19 +1,49 @@
 import { sendPromoMenu } from '../actions/settingsPromo.js'
 import { Promocode } from '../models/Promocode.js'
 import { InlineKeyboard } from 'grammy'
+import { PromoGroup } from '../models/PromoGroup.js'
+
+const inline = new InlineKeyboard().text('❌ Отмена', 'settingsPromo')
 
 export const createPromoConversation = async (conversation, ctx) => {
 	try {
-		const inline = new InlineKeyboard().text('❌ Отмена', 'cancel')
+		const promoGroups = await PromoGroup.findAll()
+		const keyboardGroups = promoGroups.map(group => [{
+			text: group.name,
+			callback_data: `selectPromoGroupToAddNew ${group.id}`
+		}])
+		keyboardGroups.push([{
+			text: '❌ Отмена',
+			callback_data: 'settingsPromo'
+		}])
 		await ctx.reply(
-			`Отправьте боту новый промокод (например: discount30, PROMO20).`,
+			`Выберите группу, в которую хотите добавить новый промокод.`,
+			{
+				reply_markup: {
+					inline_keyboard: keyboardGroups
+				}
+			}
+		)
+		const promoGroupInput = await conversation.waitFor(['message:text', 'callback_query'])
+		if (
+			promoGroupInput.update.callback_query &&
+			promoGroupInput.update.callback_query.data &&
+			promoGroupInput.update.callback_query.data === 'settingsPromo'
+		) {
+			return sendPromoMenu(ctx)
+		}
+		const promoGroupId = Number(promoGroupInput.update.callback_query.data.split(' ')[1])
+		const promoGroup = await PromoGroup.findByPk(promoGroupId)
+
+		await ctx.reply(
+			`Выбрано "${promoGroup.name}". Отправьте боту новый промокод (например: discount30, PROMO20).`,
 			{ reply_markup: inline }
 		)
 		const name = await conversation.waitFor(['message:text', 'callback_query'])
 		if (
 			name.update.callback_query &&
 			name.update.callback_query.data &&
-			name.update.callback_query.data === 'cancel'
+			name.update.callback_query.data === 'settingsPromo'
 		) {
 			return sendPromoMenu(ctx)
 		}
@@ -36,7 +66,7 @@ export const createPromoConversation = async (conversation, ctx) => {
 		if (
 			percent.update.callback_query &&
 			percent.update.callback_query.data &&
-			percent.update.callback_query.data === 'cancel'
+			percent.update.callback_query.data === 'settingsPromo'
 		) {
 			return sendPromoMenu(ctx)
 		}
@@ -60,7 +90,7 @@ export const createPromoConversation = async (conversation, ctx) => {
 		if (
 			count.update.callback_query &&
 			count.update.callback_query.data &&
-			count.update.callback_query.data === 'cancel'
+			count.update.callback_query.data === 'settingsPromo'
 		) {
 			return sendPromoMenu(ctx)
 		}
@@ -74,6 +104,7 @@ export const createPromoConversation = async (conversation, ctx) => {
 			name: name.message.text,
 			percent: percent.message.text,
 			activationCount: count.message.text,
+			promoGroupId: promoGroupId
 		})
 		await ctx.reply(`Промокод ${name.message.text} успешно создан`)
 		return await sendPromoMenu(ctx)

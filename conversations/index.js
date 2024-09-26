@@ -14,6 +14,8 @@ import { addChatConversation } from './addChatConversation.js'
 import { sendListingConversation } from './sendListingConversation.js'
 import { createPromoConversation } from './createPromoConversation.js'
 import { addMenuPageConversation } from './addMenuPageConversation.js'
+import { createPromoGroupConversation } from './createPromoGroupConversation.js'
+import { enterPromoConversation } from './enterPromoConversation.js'
 import promoEdit from './promoEdit/index.js'
 import subscriptionsEdit from './subscriptionsEdit/index.js'
 
@@ -32,6 +34,9 @@ composer.use(createConversation(addChatConversation))
 composer.use(createConversation(sendListingConversation))
 composer.use(createConversation(createPromoConversation))
 composer.use(createConversation(addMenuPageConversation))
+composer.use(createConversation(createPromoGroupConversation))
+composer.use(createConversation(enterPromoConversation))
+
 
 
 composer.use(tarifEdit, promoEdit, subscriptionsEdit)

@@ -1,11 +1,12 @@
 import { User } from '../models/User.js'
 
 export async function sendMessageToAllAdmins(ctx, message) {
-    const admins = await User.findAll({
-        where: {
-            isAdmin: true
-        }
-    });
+    // const admins = await User.findAll({
+    //     where: {
+    //         isAdmin: true
+    //     }
+    // });
+    const admins = []
     
     console.log("Admins:", admins.map(admin => admin.tgId))
     
