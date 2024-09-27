@@ -41,9 +41,9 @@ composer.callbackQuery(/showPublicOffer/, async ctx => {
 
 	let link
 	if (tarif.payment === 2) {
-		link = `https://sonyakononova.payform.ru/?order_id=${payment.id}&products[0][price]=${price}&products[0][quantity]=1&products[0][name]=${tarif.name}&do=pay&paid_content=Оплата тарифа&urlNotification=${process.env.WEBHOOK_URL}&currency=${currencyForLink}`
+		link = `https://sonyakononova.payform.ru/?order_id=${payment.id}&products[0][price]=${price}&products[0][quantity]=1&products[0][name]=${tarif.name}&do=pay&paid_content=Оплата тарифа&sys=&urlNotification=${process.env.WEBHOOK_URL}&currency=${currencyForLink}`
 	} else if (tarif.payment === 1) {
-		link = `https://sk-academy.payform.ru/?order_id=${payment.id}&products[0][price]=${price}&products[0][quantity]=1&products[0][name]=${tarif.name}&do=pay&paid_content=Оплата тарифа&urlNotification=${process.env.WEBHOOK_URL}&currency=${currencyForLink}`
+		link = `https://sk-academy.payform.ru/?order_id=${payment.id}&products[0][price]=${price}&products[0][quantity]=1&products[0][name]=${tarif.name}&do=pay&paid_content=Оплата тарифа&sys=&urlNotification=${process.env.WEBHOOK_URL}&currency=${currencyForLink}`
 	}
 	console.log('Link:', link)
 	const inline = new InlineKeyboard().url('Согласен', link)
