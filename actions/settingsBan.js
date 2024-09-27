@@ -68,7 +68,7 @@ composer.callbackQuery('banBack', async ctx => {
 		await ctx.conversation.exit()
 		const inline = new InlineKeyboard()
 			.text('👥 Подписчики', 'settingsSubs')
-			.text('📰 Лендинг', 'settingsLanding')
+			// .text('📰 Лендинг', 'settingsLanding')
 			.row()
 			.text('🔗 Админ панель', 'settingsAdminPanel')
 			.text('✉️ Ответы от бота', 'settingsAnswers')

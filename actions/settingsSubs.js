@@ -14,28 +14,30 @@ composer.callbackQuery('settingsSubs', async ctx => {
 
 
 composer.callbackQuery('subscribersList', async ctx => {
-	const subscribers = await Subscriber.findAll({
-		where: {remaining: {[Op.gt]: 0}},
+	const usersWithSubscribers = await User.findAll({
 		include: [
 			{
-				model: User,
-				as: 'user'
-			},
-			{
-				model: Tarif,
-				as: 'tarif', // Используем alias, заданный в ассоциации
+				model: Subscriber,
+				as: 'subscriber',
+				include: {
+					model: Tarif,
+					as: 'tarif'
+				},
 			},
 		],
 	})
+	const subscribedUsers = usersWithSubscribers.filter((user) => user.subscriber.filter((sub) => sub.remaining > 0).length > 0)
 
 	const data = []
-	subscribers.forEach(subscriber => {
-		data.push(`Ник: ${subscriber.user.username}, Телеграм ID: ${subscriber.user.tgId}, Тариф: ${subscriber.tarif.name}, Осталось: ${subscriber.remaining} дней`)
+	subscribedUsers.forEach(user => {
+		data.push(`Ник: ${user.username}, Телеграм ID: ${user.tgId}, Тарифы: ${user.subscriber
+			.map(sub => sub.remaining>0 ? `${sub.tarif.name} (Осталось ${sub.remaining} дней)`:null)
+			.filter(el => el !== null).join(', ')}`)
 	})
 	let pagination = new Pagination({ data })
 	let text = await pagination.text()
 	let keyboard = await pagination.keyboard()
-	if (subscribers.length < 1) {
+	if (subscribedUsers.length < 1) {
 		await ctx.reply('Список пуст.')
 	} else {
 		await ctx.reply(text, keyboard)

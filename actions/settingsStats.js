@@ -90,8 +90,7 @@ composer.callbackQuery('settingsStats', async ctx => {
 			status: 'PAID',
 		},
 	})
-	const subscribers = await Subscriber.findAll()
-	const notBuyedSubscribe = users.length - subscribers.length
+	const subscribers = await Subscriber.findAll({where: {remaining: {[Op.gt]: 0}}})
 	const paymentsForStats = await Payment.findAll({
 		where: {
 			status: 'PAID',
@@ -383,7 +382,7 @@ composer.callbackQuery('settingsStats', async ctx => {
 	}
 
 	const averagePayment =
-		paymentCount > 0 ? totalAmountInTargetCurrency / paymentCount : 0
+		paymentCount > 0 ? Math.round(totalAmountInTargetCurrency / paymentCount) : 0
 
 	console.log(averagePayment)
 
