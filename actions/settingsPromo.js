@@ -9,32 +9,32 @@ const composer = new Composer()
 
 export async function sendPromoMenu(ctx) {
 	try {
-		const promoGroups = await PromoGroup.findAll()
-		const keyboard = promoGroups.map(group => [{
-			text: group.name,
-			callback_data: `selectPromoGroup ${group.id}`
-		}])
-		keyboard.push([{
-			text: '➕ Создать группу промо',
-			callback_data: 'createPromoGroup'
-		}])
-		keyboard.push([{
-			text: '➕ Создать промо',
-			callback_data: 'createPromo'
-		}])
-		keyboard.push([{
-			text: '🔙 Назад',
-			callback_data: 'banBack'
-		}])
+		// const promoGroups = await PromoGroup.findAll()
+		// const keyboard = promoGroups.map(group => [{
+		// 	text: group.name,
+		// 	callback_data: `selectPromoGroup ${group.id}`
+		// }])
+		// keyboard.push([{
+		// 	text: '➕ Создать группу промо',
+		// 	callback_data: 'createPromoGroup'
+		// }])
+		// keyboard.push([{
+		// 	text: '➕ Создать промо',
+		// 	callback_data: 'createPromo'
+		// }])
+		// keyboard.push([{
+		// 	text: '🔙 Назад',
+		// 	callback_data: 'banBack'
+		// }])
+		const keyboard = new InlineKeyboard()
+		.text('Общие промокоды', 'generalPromos').row()
+		.text('➕ Создать промокод', 'createPromo').row()
+		.text('🔙 Назад', 'banBack')
 
 		await ctx.reply(
-			`<b>Настройки промокодов</b>
-
-Выберите нужный раздел промокодов ниже или создайте новый`,
+			`<b>Настройки промокодов</b>`,
 			{
-				reply_markup: {
-					inline_keyboard: keyboard
-				}
+				reply_markup: keyboard
 			}
 		)
 	} catch (e) {
@@ -97,7 +97,7 @@ composer.callbackQuery('createPromoGroup', async ctx => {
 	await ctx.conversation.enter('createPromoGroupConversation')
 })
 
-composer.callbackQuery('promo', async ctx => {
+composer.callbackQuery('generalPromos', async ctx => {
 	try {
 		const promos = await Promocode.findAll()
 
@@ -168,10 +168,7 @@ composer.callbackQuery(/selectPromo/, async ctx => {
 })
 
 composer.callbackQuery(/enterPromo/, async ctx => {
-	console.log(228)
-	console.log(ctx.callbackQuery.data)
 	const tarifId = Number(ctx.callbackQuery.data.split(' ')[1])
-	console.log(tarifId)
 	ctx.selectedTarifId = tarifId
 	await ctx.conversation.enter('enterPromoConversation')
 })

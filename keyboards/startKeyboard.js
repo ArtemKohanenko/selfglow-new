@@ -1,6 +1,6 @@
 import { Keyboard } from 'grammy'
 
-export const startKeyboard = new Keyboard()
+const startKeyboard = new Keyboard()
 	.text('🛒 Тарифы')
 	.text('📊 Подписки')
 	.row()
@@ -8,10 +8,11 @@ export const startKeyboard = new Keyboard()
 	.text('Согласие на обработку персональных данных')
 	.row()
 	.text('Публичная оферта')
-	.text('Согласие на информационную и рекламную рассылку.')
-	.row('📨 Обратная связь')
+	.text('Согласие на информационную и рекламную рассылку.').row()
 
-export const adminStartKeyboard = new Keyboard()
+
+
+const adminStartKeyboard = new Keyboard()
 	.text('🛒 Тарифы')
 	.text('📊 Подписки')
 	.row()
@@ -21,6 +22,6 @@ export const adminStartKeyboard = new Keyboard()
 	.text('Публичная оферта')
 	.text('Согласие на информационную и рекламную рассылку.')
 	.row()
-	.text('📨 Обратная связь')
-	.row()
-	.text('⚙️ Админ меню')
+	.text('⚙️ Админ меню').row()
+	
+export { startKeyboard, adminStartKeyboard }

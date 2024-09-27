@@ -20,7 +20,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import { sendMessageToAllAdmins } from './functions/sendMessageToAllAdmins.js'
 
-// await Payment.sync({ alter: true })
+// await Config.sync({ alter: true })
 
 const bot = new Bot(process.env.TOKEN)
 
@@ -66,6 +66,7 @@ import { Resource } from './models/Resource.js'
 import { Payment } from './models/Payment.js'
 import { PromoGroup } from './models/PromoGroup.js'
 import { Promocode } from './models/Promocode.js'
+import { Config } from './models/Config.js'
 
 async function decrementRemaining(ctx) {
 	try {

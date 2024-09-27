@@ -16,27 +16,27 @@ export const createPromoConversation = async (conversation, ctx) => {
 			text: '❌ Отмена',
 			callback_data: 'settingsPromo'
 		}])
-		await ctx.reply(
-			`Выберите группу, в которую хотите добавить новый промокод.`,
-			{
-				reply_markup: {
-					inline_keyboard: keyboardGroups
-				}
-			}
-		)
-		const promoGroupInput = await conversation.waitFor(['message:text', 'callback_query'])
-		if (
-			promoGroupInput.update.callback_query &&
-			promoGroupInput.update.callback_query.data &&
-			promoGroupInput.update.callback_query.data === 'settingsPromo'
-		) {
-			return sendPromoMenu(ctx)
-		}
-		const promoGroupId = Number(promoGroupInput.update.callback_query.data.split(' ')[1])
-		const promoGroup = await PromoGroup.findByPk(promoGroupId)
+		// await ctx.reply(
+		// 	`Выберите группу, в которую хотите добавить новый промокод.`,
+		// 	{
+		// 		reply_markup: {
+		// 			inline_keyboard: keyboardGroups
+		// 		}
+		// 	}
+		// )
+		// const promoGroupInput = await conversation.waitFor(['message:text', 'callback_query'])
+		// if (
+		// 	promoGroupInput.update.callback_query &&
+		// 	promoGroupInput.update.callback_query.data &&
+		// 	promoGroupInput.update.callback_query.data === 'settingsPromo'
+		// ) {
+		// 	return sendPromoMenu(ctx)
+		// }
+		// const promoGroupId = Number(promoGroupInput.update.callback_query.data.split(' ')[1])
+		// const promoGroup = await PromoGroup.findByPk(promoGroupId)
 
 		await ctx.reply(
-			`Выбрано "${promoGroup.name}". Отправьте боту новый промокод (например: discount30, PROMO20).`,
+			/*`Выбрано "${promoGroup.name}".`+*/`Отправьте боту новый промокод (например: discount30, PROMO20).`,
 			{ reply_markup: inline }
 		)
 		const name = await conversation.waitFor(['message:text', 'callback_query'])
@@ -104,7 +104,7 @@ export const createPromoConversation = async (conversation, ctx) => {
 			name: name.message.text,
 			percent: percent.message.text,
 			activationCount: count.message.text,
-			promoGroupId: promoGroupId
+			// promoGroupId: promoGroupId
 		})
 		await ctx.reply(`Промокод ${name.message.text} успешно создан`)
 		return await sendPromoMenu(ctx)

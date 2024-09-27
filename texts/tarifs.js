@@ -12,7 +12,10 @@ composer.hears('💰 Тарифы', adminMiddleware, async ctx => {
 })
 
 composer.command('vip', async ctx => {
-	await getAllTarifs(ctx)
+	const config = await Config.findByPk(1)
+	if (config.vipCommandAvailable) {
+		await getAllTarifs(ctx)
+	}
 })
 
 export default composer

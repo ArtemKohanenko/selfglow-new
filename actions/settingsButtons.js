@@ -1,6 +1,7 @@
 import { Composer, InlineKeyboard } from 'grammy'
 import settingsButtonsFunction from '../functions/settingsButtonsFunction.js'
 import { MenuPage } from '../models/MenuPage.js'
+import { Config } from '../models/Config.js'
 
 const composer = new Composer()
 const pages = await MenuPage.findAll()
@@ -8,6 +9,33 @@ const pages = await MenuPage.findAll()
 composer.callbackQuery('settingsButtons', async ctx => {
 	settingsButtonsFunction(ctx);
 })
+
+composer.callbackQuery('switchFeedbackSetting', async ctx => {
+	const config = await Config.findByPk(1)
+	if (config.feedbackAvailable) {
+		await ctx.reply('Обратная связь отключена.')
+	}
+	else {
+		await ctx.reply('Обратная связь включена.')
+	}
+	await Config.update({ feedbackAvailable: !config.feedbackAvailable }, { where: { id: 1 } })
+
+	return settingsButtonsFunction(ctx);
+})
+
+composer.callbackQuery('switchVipCommandSetting', async ctx => {
+	const config = await Config.findByPk(1)
+	if (config.vipCommandAvailable) {
+		await ctx.reply('Команда /vip отключена.')
+	}
+	else {
+		await ctx.reply('Команда /vip включена.')
+	}
+	await Config.update({ vipCommandAvailable: !config.vipCommandAvailable }, { where: { id: 1 } })
+
+	return settingsButtonsFunction(ctx);
+})
+
 
 composer.callbackQuery('addMenuPage', async ctx => {
 	await ctx.conversation.enter('addMenuPageConversation');

@@ -6,6 +6,7 @@ import {
 } from '../keyboards/startKeyboard.js'
 import 'dotenv/config'
 import addMenuCustomPagesToKeyboard from './addMenuCustomPagesToKeyboard.js'
+import addFeedbackToKeyboard from './addFeedbackToKeyboard.js'
 
 
 export default async ctx => {
@@ -29,7 +30,8 @@ export default async ctx => {
 		const message_to_admin = `🆕Новый пользователь: <a href="https://t.me/${ctx.from.username}">${fullname}</a>
 			🆔UserID: <code>${ctx.from.id}</code>`
 		await sendMessageToAllAdmins(ctx, message_to_admin)
-		const startKeyboardWithCustomPages = await addMenuCustomPagesToKeyboard(startKeyboard)
+		const keyboardWithFeedback = await addFeedbackToKeyboard(startKeyboard)
+		const startKeyboardWithCustomPages = await addMenuCustomPagesToKeyboard(keyboardWithFeedback)
 		await ctx.reply(
 			`Привет, красотка! 💕
 Рада приветствовать тебя в своем боте, который поможет тебе разобраться во всех интересующих вопросах:
@@ -62,8 +64,10 @@ export default async ctx => {
 			}
 		)
 	} else {
-		const startKeyboardWithCustomPages = await addMenuCustomPagesToKeyboard(startKeyboard)
-		const adminStartKeyboardWithCustomPages = await addMenuCustomPagesToKeyboard(adminStartKeyboard)
+		const keyboardWithFeedback = await addFeedbackToKeyboard(startKeyboard)
+		const startKeyboardWithCustomPages = await addMenuCustomPagesToKeyboard(keyboardWithFeedback)
+		const adminKeyboardWithFeedback = await addFeedbackToKeyboard(adminStartKeyboard)
+		const adminStartKeyboardWithCustomPages = await addMenuCustomPagesToKeyboard(adminKeyboardWithFeedback)
 		await ctx.reply(
 			`Привет, красотка! 💕
 Рада приветствовать тебя в своем боте, который поможет тебе разобраться во всех интересующих вопросах:
