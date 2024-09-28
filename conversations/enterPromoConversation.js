@@ -3,12 +3,11 @@ import { Promocode } from '../models/Promocode.js'
 import { InlineKeyboard, Keyboard } from 'grammy'
 import { PromoGroup } from '../models/PromoGroup.js'
 import { getAllTarifs } from '../functions/getAllTarifs.js'
+import { User } from '../models/User.js'
 
 export const enterPromoConversation = async (conversation, ctx) => {
 	try {
 		const tarifId = ctx.selectedTarifId
-		console.log(tarifId)
-
 		const inline = new InlineKeyboard().text('🔙 Назад', 'cancel')
 
 		await ctx.reply(
@@ -44,8 +43,9 @@ export const enterPromoConversation = async (conversation, ctx) => {
 			}
 		}
 
+		const user = await User.findOne({ where: { tgId: ctx.from.id } })
 		const activatedUsers = JSON.parse(promo.activatedUsers)
-		const userActivations = activatedUsers.filter((el) => el == ctx.from.id)
+		const userActivations = activatedUsers.filter((el) => el == user.id)
 		if (promo.activationCount && activatedUsers.length >= promo.activationCount) {
 			return await ctx.reply(`Промокод ${promoName} уже активирован максимальное кол-во раз.`, {
 				reply_markup: inline

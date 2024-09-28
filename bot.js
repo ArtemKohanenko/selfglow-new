@@ -172,6 +172,8 @@ app.post('/webhook', async (req, res) => {
 			const orderId = data.order_num
 			const payment = await Payment.findByPk(orderId)
 			await Payment.update({ status: 'PAID' }, { where: { id: orderId } })
+			const tarifId = payment.tarifId
+			const tarif = await Tarif.findByPk(tarifId)
 			const userId = payment.tgId
 			const user = await User.findOne({ where: { tgId: userId } })
 
@@ -179,16 +181,14 @@ app.post('/webhook', async (req, res) => {
 			if (payment.promocodeId) {
 				const promo = await Promocode.findByPk(payment.promocodeId)
 				const promoActivatedUsers = JSON.parse(promo.activatedUsers)
-				promoActivatedUsers.push(userId)
+				promoActivatedUsers.push(user.id)
 				await Promocode.update({ activatedUsers: JSON.stringify(promoActivatedUsers) }, { where: { id: payment.promocodeId } })
 
-				tarifPrice = Math.round(tarif.price * (1 - promo.percent/100))
+				tarifPrice = Math.floor(tarif.price * (1 - promo.percent/100))
 				console.log(`Added new promocode ${promo.name} usage`)
 			}
 			else { tarifPrice = tarif.price }
 
-			const tarifId = payment.tarifId
-			const tarif = await Tarif.findByPk(tarifId)
 			const currencyForLink = tarif.currency.split(' ')[1].toLowerCase()
 			const resource = await Resource.findByPk(tarif.resourceId)
 			const days = Math.floor(tarif.time / 1440)
