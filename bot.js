@@ -190,11 +190,16 @@ app.post('/webhook', async (req, res) => {
 			const days = Math.floor(tarif.time / 1440)
 
 			const orderSum = data.sum.split('.')[0]
+			let tarifPrice
+			if (payment.promocodeId) {
+				tarifPrice = Math.round(tarif.price * (1 - promo.percent/100))
+			}
+			else { tarifPrice = tarif.price }
 			console.log(
 				`DATA CURRENCY: ${data.currency}, CURRENCYFORLINK: ${currencyForLink} orderSum: ${orderSum} tarifPrice ${tarif.price}`
 			)
 
-			if (data.currency == currencyForLink && orderSum == tarif.price) {
+			if (data.currency == currencyForLink && orderSum == tarifPrice) {
 				const invite = await bot.api.createChatInviteLink(resource.resourceId, {
 					member_limit: 1,
 				})

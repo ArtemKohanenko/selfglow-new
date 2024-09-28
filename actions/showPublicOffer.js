@@ -35,7 +35,7 @@ composer.callbackQuery(/showPublicOffer/, async ctx => {
 
 	let price
 	if (promo) {
-		price = tarif.price * (1 - promo.percent/100)
+		price = Math.round(tarif.price * (1 - promo.percent/100))
 	}
 	else { price = tarif.price}
 
