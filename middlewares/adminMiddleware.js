@@ -8,5 +8,5 @@ export async function adminMiddleware(ctx, next) {
 	} else {
 		return console.log('not admin', ctx.from.id)
 	}
-	await next()
+	// await next()
 }
