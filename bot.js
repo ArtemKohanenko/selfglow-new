@@ -177,7 +177,9 @@ app.post('/webhook', async (req, res) => {
 
 			if (payment.promocodeId) {
 				const promo = await Promocode.findByPk(payment.promocodeId)
+				console.log('Промо:', promo)
 				const promoActivatedUsers = JSON.parse(promo.activatedUsers)
+				console.log('Активации промо:', promoActivatedUsers)
 				promoActivatedUsers.append(userId)
 				await Promocode.update({ activatedUsers: promoActivatedUsers }, { where: { id: payment.promocodeId } })
 				console.log(`Added new promocode ${promo.name} usage`)
