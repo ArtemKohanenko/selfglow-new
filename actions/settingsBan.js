@@ -4,9 +4,9 @@ import { Pagination } from './../libs/pagination.js'
 import { adminMiddleware } from '../middlewares/adminMiddleware.js'
 
 const composer = new Composer()
-composer.use(adminMiddleware)
+// composer.use(adminMiddleware)
 
-composer.callbackQuery('settingsBan', async ctx => {
+composer.callbackQuery('settingsBan', adminMiddleware, async ctx => {
 	try {
 		const inline = new InlineKeyboard()
 			.text('🔨 Забанить пользователя', 'ban')
@@ -29,7 +29,7 @@ composer.callbackQuery('settingsBan', async ctx => {
 	}
 })
 
-composer.callbackQuery('ban', async ctx => {
+composer.callbackQuery('ban', adminMiddleware, async ctx => {
 	try {
 		await ctx.conversation.enter('banUserConversation')
 	} catch (e) {
@@ -37,7 +37,7 @@ composer.callbackQuery('ban', async ctx => {
 	}
 })
 
-composer.callbackQuery('bannedList', async ctx => {
+composer.callbackQuery('bannedList', adminMiddleware, async ctx => {
 	const bannedUsers = await User.findAll({ where: { isBanned: true } })
 	const data = []
 	bannedUsers.forEach(user => {
@@ -55,7 +55,7 @@ composer.callbackQuery('bannedList', async ctx => {
 	pagination.handleActions(composer)
 })
 
-composer.callbackQuery('unban', async ctx => {
+composer.callbackQuery('unban', adminMiddleware, async ctx => {
 	try {
 		await ctx.conversation.enter('unbanUserConversation')
 	} catch (e) {
@@ -63,7 +63,7 @@ composer.callbackQuery('unban', async ctx => {
 	}
 })
 
-composer.callbackQuery('banBack', async ctx => {
+composer.callbackQuery('banBack', adminMiddleware, async ctx => {
 	try {
 		await ctx.conversation.exit()
 		const inline = new InlineKeyboard()

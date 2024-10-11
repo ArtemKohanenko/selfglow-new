@@ -6,6 +6,7 @@ export async function adminMiddleware(ctx, next) {
 		console.log('admin', ctx.from.id)
 		await next()
 	} else {
+		console.log(ctx)
 		return console.log('not admin', ctx.from.id)
 	}
 	// await next()
